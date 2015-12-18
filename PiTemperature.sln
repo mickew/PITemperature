@@ -10,6 +10,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		nginx\default = nginx\default
 		global.json = global.json
 		nginx\pitemperature = nginx\pitemperature
+		README.md = README.md
 	EndProjectSection
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "PiTemperature", "src\PiTemperature\PiTemperature.xproj", "{FFDC91AD-AD0F-4B3E-A42A-45DE1DD7464C}"
