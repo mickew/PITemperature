@@ -1,0 +1,39 @@
+﻿@{
+    ViewData["Title"] = "Temperature";
+}
+<div class="container">
+    <h1>PI Tempereture Server</h1>
+    <div id="tempContainer">Loading...</div>
+</div>
+@section Scripts {
+<script src="~/signalr/hubs"></script>
+    <script type="text/javascript">
+        var uri = 'api/sensor';
+        $(function () {
+            // Declare a proxy to reference the hub.
+            var chat = $.connection.tempHub;
+            // Create a function that the hub can call to broadcast messages.
+            chat.client.broadcastTemperature = function (sensor, temp) {
+                // Html encode display temp.
+                var encodedTemp = $('<div />').text(temp).html();
+                // Add the Temp to the page.
+                var s = '#' + sensor;
+                $(s).html('<h2>' + encodedTemp + ' °C</h2>');
+            };
+            chat.client.broadcastTempSensors = function (data) {
+                var strResult = "<table>";
+                $.each(data, function (key, item) {
+                    var encodedTemp = $('<div />').text(item.Temp).html();
+                    strResult += "<tr><td><h2>" + item.Name + "</h2></td><td><div class='tddata' id='" + item.Sensor + "'><h2>" + encodedTemp + " °C</h2></div></td></tr>";
+                });
+                strResult += "</table>";
+                $("#tempContainer").html(strResult);
+            };
+            // Start the connection.
+            $.connection.hub.start().done(function () {
+                // Call the GetTemperature method on the hub.
+                chat.server.getTempSensors();
+            });
+        });
+    </script>
+}
