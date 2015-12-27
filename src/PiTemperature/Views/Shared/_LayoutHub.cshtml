@@ -7,11 +7,13 @@
     <title>@ViewBag.Title - PI Temperature Server</title>
     <environment  names="Development">
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="~/css/site.css" />
     </environment>
     <environment names="Staging,Production">
         <link rel="stylesheet" href="//ajax.aspnetcdn.com/ajax/bootstrap/3.3.5/css/bootstrap.min.css"
               asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
               asp-fallback-test-class="hidden" asp-fallback-test-property="visibility" asp-fallback-test-value="hidden" />
+        <link rel="stylesheet" href="~/css/site.min.css" />
     </environment>
 
     @*<style type="text/css">
@@ -28,13 +30,14 @@
     </style>*@
 </head>
 <body>
-    <div>
+    <div class="container-fluid">
         @RenderBody()
     </div>
     <environment names="Development">
         <script src="~/lib/jquery/dist/jquery.js"></script>
         <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
         <script src="~/lib/signalr/jquery.signalR.js"></script>
+        <script src="~/lib/knockout/dist/knockout.js"></script>
     </environment>
     <environment names="Staging,Production">
         <script src="//ajax.aspnetcdn.com/ajax/jquery/jquery-2.1.4.min.js"
@@ -48,6 +51,10 @@
         <script src="//ajax.aspnetcdn.com/ajax/signalr/jquery.signalr-2.2.0.min.js"
                 asp-fallback-src="~/lib/signalr/jquery.signalR.min.js"
                 asp-fallback-test="$.connection">
+        </script>
+        <script src="//ajax.aspnetcdn.com/ajax/knockout/knockout-3.4.0.js" 
+                asp-fallback-src="~/lib/knockout/dist/knockout.js" 
+                asp-fallback-test="window.ko">
         </script>
     </environment>
 

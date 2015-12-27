@@ -2,39 +2,33 @@
     ViewData["Title"] = "Temperature";
     Layout = Layout = "~/Views/Shared/_LayoutHub.cshtml";
 }
-<div class="container">
-    <h1>PI Tempereture Server</h1>
-    <div id="tempContainer">Loading...</div>
+<div class="row">
+    <div class="col-md-6 col-md-offset-3">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">PI Tempereture Server </h3>
+                <div class="hidden" id="connectionStateContanier">
+                    <span class="label label-info" data-bind="visible: connectionState() === $.signalR.connectionState.connecting">Connecting</span>
+                    <span class="label label-success" data-bind="visible: connectionState() === $.signalR.connectionState.connected">Connected</span>
+                    <span class="label label-warning" data-bind="visible: connectionState() === $.signalR.connectionState.reconnecting">Reconnecting</span>
+                    <span class="label label-danger" data-bind="visible: connectionState() === $.signalR.connectionState.disconnected">Disconnected</span>
+                </div>
+            </div>
+            <div class="panel-body">
+                <div data-bind="visible: sensors().length === 0">Loading...</div>
+                <div data-bind="visible: sensors().length > 0, template: { name: 'sensor-template', foreach: sensors }">
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+<script type="text/html" id="sensor-template">
+    <div class="row">
+        <div class="col-md-4 col-xs-6"><span data-bind="text: Name"></span></div>
+        <div class="col-md-3 col-xs-6"><span data-bind="text: Temp"></span>°C</div>
+    </div>
+</script>
 @section Scripts {
 <script src="~/signalr/hubs"></script>
-    <script type="text/javascript">
-        var uri = 'api/sensor';
-        $(function () {
-            // Declare a proxy to reference the hub.
-            var chat = $.connection.tempHub;
-            // Create a function that the hub can call to broadcast messages.
-            chat.client.broadcastTemperature = function (sensor, temp) {
-                // Html encode display temp.
-                var encodedTemp = $('<div />').text(temp).html();
-                // Add the Temp to the page.
-                var s = '#' + sensor;
-                $(s).html('<h2>' + encodedTemp + ' °C</h2>');
-            };
-            chat.client.broadcastTempSensors = function (data) {
-                var strResult = "<table>";
-                $.each(data, function (key, item) {
-                    var encodedTemp = $('<div />').text(item.Temp).html();
-                    strResult += "<tr><td><h2>" + item.Name + "</h2></td><td><div class='tddata' id='" + item.Sensor + "'><h2>" + encodedTemp + " °C</h2></div></td></tr>";
-                });
-                strResult += "</table>";
-                $("#tempContainer").html(strResult);
-            };
-            // Start the connection.
-            $.connection.hub.start().done(function () {
-                // Call the GetTemperature method on the hub.
-                chat.server.getTempSensors();
-            });
-        });
-    </script>
+<script src="~/js/temp.app.js"></script>
 }
