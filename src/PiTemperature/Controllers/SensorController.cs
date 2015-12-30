@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Mvc;
 using PiTemperature.Meters;
+using PiTemperature.Repositories;
 
 // For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -13,9 +14,12 @@ namespace PiTemperature.Controllers
     public class SensorController : Controller
     {
         private readonly Temperature temperature;
-        public SensorController(Temperature temperature)
+        private ISensorRepository _sensorRepository;
+
+        public SensorController(Temperature temperature, ISensorRepository sensorRepository)
         {
             this.temperature = temperature;
+            this._sensorRepository = sensorRepository;
         }
 
         // GET: api/sensor
@@ -51,6 +55,16 @@ namespace PiTemperature.Controllers
                 return HttpNotFound();
             }
 
+            var tmpSensor = _sensorRepository.Get(tempSensor.Sensor);
+            if (tmpSensor != null)
+            {
+                tmpSensor.Name = sensor.Name;
+                _sensorRepository.Update(tmpSensor);
+            }
+            else
+            {
+                _sensorRepository.Create(new Models.Sensor() { Id = sensor.Sensor, Name = sensor.Name });
+            }
             tempSensor.Name = sensor.Name;
             temperature.RefreshClients();
             return new NoContentResult();

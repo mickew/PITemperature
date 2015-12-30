@@ -9,6 +9,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using PiTemperature.Meters;
 using Microsoft.AspNet.SignalR;
+using PiTemperature.Models;
+using Microsoft.Data.Entity;
+using Microsoft.AspNet.Identity.EntityFramework;
+using PiTemperature.Repositories;
+using Microsoft.Extensions.PlatformAbstractions;
+using System.IO;
 
 namespace PiTemperature
 {
@@ -28,8 +34,36 @@ namespace PiTemperature
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // Configure our application database context to be Entity Framework backed by SQL Server
+            var path = PlatformServices.Default.Application.ApplicationBasePath;
+            services.AddEntityFramework()
+                .AddSqlite()
+                .AddDbContext<ApplicationDbContext>(otions => 
+                    //otions.UseSqlite(Configuration["Data:DefaultConnection:ConnectionString"]));
+                    otions.UseSqlite("Filename=" + Path.Combine(path, "pitemperature.db")));
+
+            // Specify the configuration of our Application database context
+            services.Configure<ApplicationDbContextOptions>(options =>
+            {
+                options.DefaultUsername = Configuration["DefaultUser:Username"];
+                options.DefaultPassword = Configuration["DefaultUSer:Password"];
+            });
+
+            // Configure ASP.NET Identity to use our Identity-based application context
+            services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+            {
+                options.Password.RequiredLength = 6;
+                options.Password.RequireDigit = false;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireNonLetterOrDigit = false;
+                options.Password.RequireUppercase = false;
+            })
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders();
+
             // Add framework services.
             services.AddMvc();
+            services.AddScoped<ISensorRepository, SensorRepository>();
             services.AddSingleton<Temperature>();
             services.AddSignalR(options =>
             {
@@ -47,9 +81,11 @@ namespace PiTemperature
 
             //app.UseDefaultFiles();
             app.UseStaticFiles();
+            app.UseIdentity();
 
             app.UseMvc();
             app.UseSignalR();
+            ApplicationDbContext.InitializeDatabaseAsync(app.ApplicationServices).Wait();
         }
 
         // Entry point for the application.

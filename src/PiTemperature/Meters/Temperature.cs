@@ -8,7 +8,7 @@ using System.Linq;
 using System.Threading;
 using System.Text;
 using System.Threading.Tasks;
-
+using PiTemperature.Repositories;
 
 namespace PiTemperature.Meters
 {
@@ -21,13 +21,16 @@ namespace PiTemperature.Meters
         private Timer tempTimer { get; set; }
         private IHubConnectionContext<dynamic> Clients { get; set; }
         private List<TempsensorOldTemp> tempsensors;
+        private ISensorRepository _sensorRepository;
 
         public List<TempSensor> TempSensors { get { return tempsensors.ToList<TempSensor>(); } }
 
-        public Temperature(IHubContext<TempHub> hubContext)
+        public Temperature(IHubContext<TempHub> hubContext, ISensorRepository sensorRepository)
         {
+            _sensorRepository = sensorRepository;
             tempsensors = new List<TempsensorOldTemp>();
             GetTempSensors();
+            UpdateNames();
             Clients = hubContext.Clients;
             CheckAllTemps();
             tempTimer = new Timer(TimerCallback, null, 0, 5000);
@@ -41,6 +44,18 @@ namespace PiTemperature.Meters
         public void RefreshClients()
         {
             Clients.All.broadcastTempSensors(TempSensors);
+        }
+
+        private void UpdateNames()
+        {
+            foreach (var item in tempsensors)
+            {
+                var sensor = _sensorRepository.Get(item.Sensor);
+                if (sensor != null)
+                {
+                    item.Name = sensor.Name;
+                }
+            }
         }
 
         private void GetTempSensors()
