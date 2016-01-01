@@ -7,6 +7,7 @@ var gulp = require("gulp"),
     uglify = require("gulp-uglify"),
     less = require("gulp-less"),
     tsc = require("gulp-tsc"),
+    rename = require("gulp-rename"),
     project = require("./project.json");
 
 var paths = {
@@ -34,8 +35,9 @@ gulp.task("clean", ["clean:js", "clean:css"]);
 
 gulp.task("min:js", function () {
     gulp.src([paths.js, "!" + paths.minJs], { base: "." })
-        .pipe(concat(paths.concatJsDest))
+        //.pipe(concat(paths.concatJsDest))
         .pipe(uglify())
+        .pipe(rename({extname: '.min.js'}))
         .pipe(gulp.dest("."));
 });
 

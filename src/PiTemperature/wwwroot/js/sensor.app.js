@@ -64,6 +64,19 @@ $(function () {
                 }
             });
         };
+        SensorListViewModel.prototype.deleteItem = function (item) {
+            $.ajax({
+                context: this,
+                type: 'DELETE',
+                contentType: "application/json",
+                dataType: "json",
+                url: '/api/Sensor/' + item.Sensor,
+                data: ko.toJSON(item),
+                success: function (data) {
+                    item.Name(data.Name);
+                }
+            });
+        };
         return SensorListViewModel;
     })();
     var vm = new SensorListViewModel();

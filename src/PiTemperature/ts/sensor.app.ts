@@ -77,6 +77,20 @@ $(function () {
             });
         }
 
+        deleteItem(item: SensorViewModel) {
+            $.ajax({
+                context: this,
+                type: 'DELETE',
+                contentType: "application/json",
+                dataType: "json",
+                url: '/api/Sensor/' + item.Sensor,
+                data: ko.toJSON(item),
+                success: function (data: TempSensorBase) {
+                    item.Name(data.Name);
+                }
+            });
+        }
+
      }
 
 

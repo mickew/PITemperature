@@ -77,6 +77,22 @@ namespace PiTemperature
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
 
+            // Add the following to the request pipeline only in development environment.
+            if (env.IsDevelopment())
+            {
+                //app.UseBrowserLink();
+                app.UseDeveloperExceptionPage();
+                app.UseDatabaseErrorPage(options =>
+                {
+                    options.EnableAll();
+                });
+            }
+            else
+            {
+                // Add Error handling middleware which catches all application specific errors and
+                // sends the request to the following path or controller action.
+                app.UseExceptionHandler("/Home/Error");
+            }
             app.UseIISPlatformHandler();
 
             //app.UseDefaultFiles();

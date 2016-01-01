@@ -1,0 +1,54 @@
+﻿@model LoginViewModel
+@{
+    ViewData["Title"] = "Log in";
+}
+<div class="row">
+
+    <div class="row">
+        <div class="col-md-12 center login-header">
+            <h2>Welcome to PI Temperature Server</h2>
+        </div>
+        <!--/span-->
+    </div>
+    <div class="row center">
+        <div class="well col-md-5 center login-box">
+            <div class="alert alert-info">
+                Please login with your Username and Password.
+            </div>
+            <form asp-controller="Account" asp-action="Login" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="form-horizontal" role="form">
+                <section>
+                    <div asp-validation-summary="ValidationSummary.All" class="text-danger"></div>
+                    <div class="input-group input-group-lg">
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-user red"></i></span>
+                        <input asp-for="UserName" class="form-control" autofocus="" placeholder="Username" />
+                        <span asp-validation-for="UserName" class="text-danger"></span>
+                    </div>
+                    <div class="clearfix"></div><br>
+
+                    <div class="input-group input-group-lg">
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-lock red"></i></span>
+                        <input asp-for="Password" class="form-control" placeholder="Password" />
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+                    <div class="clearfix"></div>
+
+                    <div class="input-prepend">
+                        <div class="checkbox">
+                            @*<label class="remember" for="remember"><input type="checkbox" id="remember"> Remember me</label>*@
+                            <label asp-for="RememberMe"></label><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><input asp-for="RememberMe" />
+                        </div>
+                    </div>
+                    <div class="clearfix"></div>
+
+                    <p class="center col-md-5">
+                        <button type="submit" class="btn btn-primary">Login</button>
+                    </p>
+                </section>
+            </form>
+        </div>
+        <!--/span-->
+    </div><!--/row-->
+</div>
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}

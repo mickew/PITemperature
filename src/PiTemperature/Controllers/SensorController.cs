@@ -5,11 +5,13 @@ using System.Threading.Tasks;
 using Microsoft.AspNet.Mvc;
 using PiTemperature.Meters;
 using PiTemperature.Repositories;
+using Microsoft.AspNet.Authorization;
 
 // For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace PiTemperature.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     public class SensorController : Controller
     {
@@ -23,12 +25,14 @@ namespace PiTemperature.Controllers
         }
 
         // GET: api/sensor
+        [Authorize(Roles = "admins")]
         [HttpGet]
         public IEnumerable<TempSensorBase> Get()
         {
             return temperature.TempSensors.Select(c => new TempSensorBase(c.Sensor) { Name = c.Name });
         }
 
+        [Authorize(Roles = "admins")]
         [HttpGet("{id}", Name = "GetSensor")]
         public IActionResult GetById(string id)
         {
@@ -39,8 +43,9 @@ namespace PiTemperature.Controllers
             }
             return new ObjectResult(item);
         }
-        
+
         // PUT api/sensor/5
+        [Authorize(Roles = "admins")]
         [HttpPut("{id}")]
         public IActionResult Update(string id, [FromBody]TempSensorBase sensor)
         {
@@ -68,6 +73,34 @@ namespace PiTemperature.Controllers
             tempSensor.Name = sensor.Name;
             temperature.RefreshClients();
             return new NoContentResult();
+        }
+
+        // PUT api/sensor/5
+        [Authorize(Roles = "admins")]
+        [HttpDelete("{id}")]
+        public IActionResult Delete(string id, [FromBody]TempSensorBase sensor)
+        {
+            if (sensor == null || sensor.Sensor != id)
+            {
+                return HttpBadRequest();
+            }
+
+            var tempSensor = temperature.TempSensors.Where(c => c.Sensor == id).FirstOrDefault();
+            if (tempSensor == null)
+            {
+                return HttpNotFound();
+            }
+
+            var tmpSensor = _sensorRepository.Get(tempSensor.Sensor);
+            if (tmpSensor != null)
+            {
+                _sensorRepository.Delete(tmpSensor.Id);
+            }
+            var i = temperature.TempSensors.IndexOf(tempSensor) + 1;
+            sensor.Name = string.Format("TempSensor {0}", i);
+            tempSensor.Name = sensor.Name;
+            temperature.RefreshClients();
+            return new ObjectResult(sensor);
         }
     }
 }

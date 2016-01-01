@@ -4,6 +4,9 @@
   "dependencies": {
     "jquery": "2.1.4",
     "bootstrap": "3.3.5",
+    "jquery-validation": "1.14.0",
+    "jquery-validation-unobtrusive": "3.2.5",
+    "font-awesome": "4.5.0",
     "signalr": "~2.2.0",
     "knockout": "^3.4.0"
   }

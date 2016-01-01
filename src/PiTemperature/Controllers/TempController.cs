@@ -4,9 +4,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Mvc;
 using PiTemperature.Meters;
+using Microsoft.AspNet.Authorization;
 
 namespace PiTemperature.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     public class TempController : Controller
     {
@@ -17,6 +19,7 @@ namespace PiTemperature.Controllers
         }
 
         // GET: api/temp
+        [AllowAnonymous]
         [HttpGet]
         public IEnumerable<TempSensor> Get()
         {
@@ -25,6 +28,7 @@ namespace PiTemperature.Controllers
 
 
         // GET api/values/5
+        [AllowAnonymous]
         [HttpGet("{id}")]
         public TempSensor Get(string id)
         {

@@ -23,6 +23,8 @@ namespace PiTemperature.Repositories
         public void Delete(string id)
         {
             var entity = _context.Sensors.First(t => t.Id == id);
+            _context.Sensors.Remove(entity);
+            _context.SaveChanges();
         }
 
         public Sensor Get(string id)

@@ -1,6 +1,6 @@
 ﻿@{
     ViewData["Title"] = "Temperature";
-    Layout = Layout = "~/Views/Shared/_LayoutHub.cshtml";
+    //Layout = Layout = "~/Views/Shared/_LayoutHub.cshtml";
 }
 <div class="row">
     <div class="col-md-6 col-md-offset-3">
@@ -30,5 +30,10 @@
 </script>
 @section Scripts {
 <script src="~/signalr/hubs"></script>
-<script src="~/js/temp.app.js"></script>
+<environment names="Development">
+    <script src="~/js/temp.app.js"></script>
+</environment>
+<environment names="Staging,Production">
+    <script src="~/js/temp.app.min.js"></script>
+</environment>
 }
