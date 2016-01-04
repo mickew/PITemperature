@@ -216,3 +216,6 @@ ModelManifest.xml
 
 # Javascript generated files by typescript
 **/ts/*.js
+
+# Project generated component files
+**/bower_components
