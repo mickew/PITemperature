@@ -17,23 +17,27 @@
             <div class="panel-body">
                 <div data-bind="visible: sensors().length === 0">Loading...</div>
                 <div data-bind="visible: sensors().length > 0, template: { name: 'sensor-template', foreach: sensors }">
-                </div>
+                    </div>
             </div>
         </div>
     </div>
 </div>
 <script type="text/html" id="sensor-template">
     <div class="row">
-        <div class="col-md-4 col-xs-6"><span data-bind="text: Name"></span></div>
-        <div class="col-md-3 col-xs-6"><span data-bind="text: Temp"></span>°C</div>
+        @*<div class="col-md-4 col-xs-6"><span data-bind="text: Name"></span></div>
+        <div class="col-md-3 col-xs-6"><span data-bind="text: Temp"></span>°C</div>*@
+        <div class="col-md-4 col-xs-6">
+            <canvas data-bind="attr: { id: Sensor }"></canvas>
+        </div>
     </div>
 </script>
 @section Scripts {
-<script src="~/signalr/hubs"></script>
-<environment names="Development">
-    <script src="~/js/temp.app.js"></script>
-</environment>
-<environment names="Staging,Production">
-    <script src="~/js/temp.app.min.js"></script>
-</environment>
+    <script src="~/signalr/hubs"></script>
+    <environment names="Development">
+        <script src="~/js/gauge.js"></script>
+        <script src="~/js/temp.app.js"></script>
+    </environment>
+    <environment names="Staging,Production">
+        <script src="~/js/temp.app.min.js"></script>
+    </environment>
 }

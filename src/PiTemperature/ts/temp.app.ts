@@ -1,11 +1,13 @@
 ﻿/// <reference path="typings/Hubs.d.ts" />
 /// <reference path="typings/knockout.d.ts" />
+/// <reference path="typings/gauge.d.ts" />
 
 $(function () {
     class TempSensorViewModel {
         public Sensor: string;
         public Name: string;
         Temp: KnockoutObservable<number>;
+        Gauge: Gauge;
         constructor(sensor: string, name: string, temp: number) {
             this.Sensor = sensor;
             this.Name = name;
@@ -30,8 +32,58 @@ $(function () {
             this.hub.server.getTempSensors();
         }
 
+        drawGauges() {
+            this.sensors().forEach(s => {
+                s.Gauge = new Gauge(
+                    {
+                        renderTo: s.Sensor,
+                        title: s.Name,
+                        minValue: -30,
+                        maxValue: 70,
+                        majorTicks: ['-30', '-20', '-10', '0', '10', '20', '30', '40', '50', '60', '70'],
+                        units: "°C",
+                        valueFormat: { int: 2, dec: 2 },
+                        glow: true,
+                        highlights: [{
+                            from: -30,
+                            to: -10,
+                            color: 'SkyBlue'
+                            }, {
+                                from: -10,
+                                to: 10,
+                                color: 'Khaki'
+                            }, {
+                                from: 10,
+                                to: 30,
+                                color: 'PaleGreen'
+                            }, {
+                                from: 30,
+                                to: 70,
+                                color: 'LightSalmon'
+                            }],
+                        animation: {
+                            delay: 10,
+                            duration: 300,
+                            fn: 'bounce'
+                        }
+                    });
+                s.Gauge.setValue(s.Temp());
+                s.Gauge.draw();
+            });
+        }
+
         connectionStateChanged(state: SignalRStateChange) {
             vm.connectionState(state.newState);
+            switch (state.newState) {
+                case 0:
+                    vm.sensors().forEach(s => { s.Gauge.setValue(-30) });
+                    break;
+                case 4:
+                    vm.sensors().forEach(s => { s.Gauge.setValue(70) });
+                    break;
+                default:
+                    break;
+            }
         }
 
         disconnected() {
@@ -45,6 +97,7 @@ $(function () {
                 return item.Sensor === tempSensor.Sensor;
             });
             thesensor.Temp(tempSensor.Temp);
+            thesensor.Gauge.setValue(tempSensor.Temp);
         }
 
         broadcastTempSensors(list: Array<TempSensor>) {
@@ -52,6 +105,7 @@ $(function () {
                 return new TempSensorViewModel(item.Sensor, item.Name, item.Temp)
             });
             vm.sensors(mapedSensors);
+            vm.drawGauges();
         }
     }
 

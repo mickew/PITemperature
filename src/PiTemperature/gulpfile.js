@@ -13,6 +13,7 @@ var gulp = require("gulp"),
 
 var paths = {
     bower:"./bower_components/",
+    scripts: "./Scripts/",
     webroot: "./" + project.webroot + "/",
     css: "./" + project.webroot + "/css/",
     js: "./" + project.webroot + "/js/",
@@ -59,6 +60,10 @@ var sources = {
         {
             name: "font-awesome",
             path: paths.bower + "font-awesome/**/*.{ttf,svg,woff,woff2,otf,eot}"
+        },
+        {
+            name: "font-digital",
+            path: paths.scripts + "canv-gauge/**/*.{ttf,svg,woff,woff2,otf,eot}"
         }
     ],
     css: [
@@ -95,6 +100,10 @@ var sources = {
         {
             name: "signalr",
             path: paths.bower + "signalr/**/{jquery.signalR.js,jquery.signalR.min.js}"
+        },
+        {
+            name: "canv-gauge",
+            path: paths.scripts + "canv-gauge/**/{gauge.js,gauge.min.js}"
         }
     ]
 };
