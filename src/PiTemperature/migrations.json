@@ -1,0 +1,9 @@
+//{
+//"MigrationMax": 1,
+//"Migrations": [
+//"CREATE TABLE \"Temp\" (\"Id\" TEXT NOT NULL CONSTRAINT \"PK_Temp\" PRIMARY KEY, \"Name\" TEXT)",
+//],
+//"Notes": [
+//"Mig 1",
+//]
+//}

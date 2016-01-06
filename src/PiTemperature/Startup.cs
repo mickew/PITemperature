@@ -74,12 +74,12 @@ namespace PiTemperature
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
-            loggerFactory.AddConsole(Configuration.GetSection("Logging"));
-            loggerFactory.AddDebug();
-
             // Add the following to the request pipeline only in development environment.
             if (env.IsDevelopment())
             {
+                loggerFactory.AddConsole(minLevel: LogLevel.Verbose, includeScopes: false);
+                loggerFactory.AddDebug();
+
                 //app.UseBrowserLink();
                 app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage(options =>
@@ -89,6 +89,7 @@ namespace PiTemperature
             }
             else
             {
+                loggerFactory.AddConsole(Configuration.GetSection("Logging"));
                 // Add Error handling middleware which catches all application specific errors and
                 // sends the request to the following path or controller action.
                 app.UseExceptionHandler("/Home/Error");
@@ -101,7 +102,7 @@ namespace PiTemperature
 
             app.UseMvc();
             app.UseSignalR();
-            ApplicationDbContext.InitializeDatabaseAsync(app.ApplicationServices).Wait();
+            ApplicationDbContext.InitializeDatabaseAsync(app.ApplicationServices, loggerFactory).Wait();
         }
 
         // Entry point for the application.
