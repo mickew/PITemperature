@@ -40,7 +40,7 @@ start() {
     return 1
   fi
   echo 'Starting service...' >&2
-  su -c "export PATH=$DNXPATHS:\${PATH} && start-stop-daemon -SbmCv -x /usr/bin/nohup -p \"$PIDFILE\" -d \"$APPROOT\" -- \"$DNXRUNTIME\" $DNXCOMMAND > \"$LOGFILE\" 2>&1" $WWW_USER
+  su -c "export PATH=$DNXPATHS:\${PATH} && start-stop-daemon -SbmCv -x /usr/bin/nohup -p \"$PIDFILE\" -d \"$APPROOT\" -- \"$DNXRUNTIME\" $DNXCOMMAND >> \"$LOGFILE\" 2>&1" $WWW_USER
   echo 'Service started' >&2
 }
 

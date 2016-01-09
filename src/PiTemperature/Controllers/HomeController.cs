@@ -23,6 +23,14 @@ namespace PiTemperature.Controllers
 
         [AllowAnonymous]
         [Route("[action]")]
+        public IActionResult Index2()
+        {
+            ViewBag.HideNav = true;
+            return View("Index");
+        }
+
+        [AllowAnonymous]
+        [Route("[action]")]
         public IActionResult About()
         {
             return View();

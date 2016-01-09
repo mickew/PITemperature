@@ -1,0 +1,24 @@
+﻿<Page
+    x:Class="uwaTemperatureClient.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:uwaTemperatureClient"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Grid Name="grdMain" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+        <WebView Name="browser" Grid.Row="0" ScriptNotify="browser_ScriptNotify" NavigationStarting="browser_NavigationStarting" NavigationFailed="browser_NavigationFailed"></WebView>
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,10" HorizontalAlignment="Center">
+            <TextBlock Name="lblServer" VerticalAlignment="Center" Margin="10,0"></TextBlock>
+            <!--<TextBox Name="tbServer" VerticalAlignment="Center" Margin="0,0,10,0" MinWidth="200"></TextBox>
+            <Label VerticalAlignment="Center" Margin="10,0">Id:</Label>
+            <TextBox Name="tbId" VerticalAlignment="Center" Margin="0,0,10,0" MinWidth="200" Text="Monitor1"></TextBox>-->
+            <Button Name="btnSettings" Margin="10,0" Click="btnSettings_Click" VerticalAlignment="Center">Settings</Button>
+        </StackPanel>
+    </Grid>
+</Page>
