@@ -4,11 +4,12 @@
   xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
   xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest"
   xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
-  IgnorableNamespaces="uap mp">
+  xmlns:iot="http://schemas.microsoft.com/appx/manifest/iot/windows10"
+  IgnorableNamespaces="uap mp iot">
 
   <Identity
-    Name="67b97f59-13ec-48b8-ae4d-d6af9d13c769"
-    Publisher="CN=MickeW"
+    Name="PITemperatureClient"
+    Publisher="CN=PROMARMIC AB"
     Version="1.0.0.0" />
 
   <mp:PhoneIdentity PhoneProductId="67b97f59-13ec-48b8-ae4d-d6af9d13c769" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
@@ -40,10 +41,15 @@
         <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png"/>
         <uap:SplashScreen Image="Assets\SplashScreen.png" />
       </uap:VisualElements>
+      <uap:ApplicationContentUriRules>
+        <uap:Rule Match="http://*" Type="include"/>
+      </uap:ApplicationContentUriRules>
     </Application>
   </Applications>
 
+  
   <Capabilities>
-    <Capability Name="internetClient" />
+    <Capability Name="internetClient" />    
+    <iot:Capability Name="systemManagement" />
   </Capabilities>
 </Package>

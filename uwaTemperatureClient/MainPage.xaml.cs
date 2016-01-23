@@ -16,6 +16,10 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using Windows.System;
+using Windows.Devices.Gpio;
+using Windows.System.Threading;
+using Windows.UI.Popups;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -28,6 +32,13 @@ namespace uwaTemperatureClient
     {
         private readonly CoreDispatcher _dispatcher;
         private PITSettings settings;
+        private bool statusBarIsShownByScriptNotify = false;
+        private bool statusBarVisible = false;
+        private const int BUTTON_PIN = 5;
+        private GpioPin buttonPin;
+        private ThreadPoolTimer buttonShutDownTimer;
+
+
 
         public MainPage()
         {
@@ -38,10 +49,65 @@ namespace uwaTemperatureClient
             if (settings.CheckOk())
             {
                 SetServerLabel(settings.Server);
+#pragma warning disable 4014
                 Navigate(new Uri(settings.Server));
+#pragma warning restore 4014
+            }
+            InitGPIO();
+        }
+
+        private void InitGPIO()
+        {
+            var gpio = GpioController.GetDefault();
+            if (gpio != null)
+            {
+                buttonPin = gpio.OpenPin(BUTTON_PIN);
+                // Check if input pull-up resistors are supported
+                if (buttonPin.IsDriveModeSupported(GpioPinDriveMode.InputPullUp))
+                    buttonPin.SetDriveMode(GpioPinDriveMode.InputPullUp);
+                else
+                    buttonPin.SetDriveMode(GpioPinDriveMode.Input);
+
+                // Set a debounce timeout to filter out switch bounce noise from a button press
+                buttonPin.DebounceTimeout = TimeSpan.FromMilliseconds(50);
+                buttonPin.ValueChanged += ButtonPin_ValueChanged;
             }
         }
 
+        private void ButtonPin_ValueChanged(GpioPin sender, GpioPinValueChangedEventArgs args)
+        {
+            if (args.Edge == GpioPinEdge.FallingEdge)
+            {
+                if (statusBarVisible)
+                {
+                    ShowStatusBar(false);
+                    statusBarIsShownByScriptNotify = false;
+                }
+                else
+                {
+                    ShowStatusBar(true);
+                    statusBarIsShownByScriptNotify = true;
+                }
+                buttonShutDownTimer = ThreadPoolTimer.CreateTimer(buttonShutDownTimerElapsedHandler, TimeSpan.FromSeconds(3));
+            }
+            else
+            {
+                if (buttonShutDownTimer != null)
+                {
+                    buttonShutDownTimer.Cancel();
+                    buttonShutDownTimer = null;
+                }
+            }
+        }
+
+        public void buttonShutDownTimerElapsedHandler(ThreadPoolTimer timer)
+        {
+            if (buttonPin.Read() == GpioPinValue.Low)
+            {
+                buttonShutDownTimer = null;
+                ShutDown();
+            }
+        }
         public async Task<string> MakeWebRequest(Uri uri)
         {
             HttpClient http = new System.Net.Http.HttpClient();
@@ -65,9 +131,15 @@ namespace uwaTemperatureClient
         {
             GridLength gridLength;
             if (show)
+            {
+                statusBarVisible = true;
                 gridLength = new GridLength();
+            }
             else
+            {
+                statusBarVisible = false;
                 gridLength = new GridLength(0);
+            }
             await _dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => grdMain.RowDefinitions[1].Height = gridLength);
         }
 
@@ -88,7 +160,13 @@ namespace uwaTemperatureClient
                 {
                     SetServerLabel(settings.Server);
                     await Navigate(new Uri(settings.Server));
+                    statusBarIsShownByScriptNotify = false;
                 }
+            }
+            if (statusBarIsShownByScriptNotify)
+            {
+                ShowStatusBar(false);
+                statusBarIsShownByScriptNotify = false;
             }
         }
 
@@ -99,7 +177,16 @@ namespace uwaTemperatureClient
                 string data = e.Value;
                 if (data.StartsWith("Clicked:"))
                 {
-                    ShowStatusBar(true);
+                    if (statusBarVisible)
+                    {
+                        ShowStatusBar(false);
+                        statusBarIsShownByScriptNotify = false;
+                    }
+                    else
+                    {
+                        ShowStatusBar(true);
+                        statusBarIsShownByScriptNotify = true;
+                    }
                 }
             }
             catch (Exception)
@@ -116,6 +203,44 @@ namespace uwaTemperatureClient
         private void browser_NavigationFailed(object sender, WebViewNavigationFailedEventArgs e)
         {
             ShowStatusBar(true);
+        }
+
+        private void btnTurnOff_Click(object sender, RoutedEventArgs e)
+        {
+            ShutDown();
+        }
+
+        private void ShutDown()
+        {
+
+#pragma warning disable 4014
+            _dispatcher.RunAsync(CoreDispatcherPriority.Normal,() =>
+            {
+                var dialog = new ContentDialog()
+                {
+                    Title = "PI Temperature Shutdown",
+                    MaxWidth = this.ActualWidth // Required for Mobile!
+                };
+
+                // Setup Content
+                var panel = new StackPanel();
+                panel.Children.Add(new TextBlock
+                {
+                    Text = "System is shutting down!.",
+                    TextWrapping = TextWrapping.Wrap,
+                });
+
+                dialog.Content = panel;
+
+                //// Add Buttons
+                //dialog.PrimaryButtonText = "OK";
+                //dialog.SecondaryButtonText = "Cancel";
+
+                // Show Dialog
+                dialog.ShowAsync();
+            });
+#pragma warning restore 4014
+            ShutdownManager.BeginShutdown(ShutdownKind.Shutdown, new TimeSpan(0,0,2));
         }
     }
 }
