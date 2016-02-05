@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Mvc;
 using Microsoft.AspNet.Authorization;
+using Microsoft.Extensions.Logging;
 
 // For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -13,6 +14,13 @@ namespace PiTemperature.Controllers
     [Route("[controller]")]
     public class AdminController : Controller
     {
+        private readonly ILogger<AdminController> _logger;
+
+        public AdminController(ILogger<AdminController> logger)
+        {
+            _logger = logger;
+        }
+
         // GET: /<controller>/
         [AllowAnonymous]
         [Route("[action]"), Route("")]
@@ -32,8 +40,14 @@ namespace PiTemperature.Controllers
         [Route("[action]")]
         public IActionResult Shutdown()
         {
-            var p = System.Diagnostics.Process.Start("shutdown", "h now");
+            var p = System.Diagnostics.Process.Start("shutdown", "-h now");
+            //var p = System.Diagnostics.Process.Start("Notepad");
             p.WaitForExit(2000);
+            if (p.HasExited && p.ExitCode != 0)
+            {
+                _logger.LogWarning(string.Format("Shutdown not working Exit = {0}",p.ExitCode));
+            }
+            _logger.LogInformation("Shutdown....");
             return View("Index");
         }
 
