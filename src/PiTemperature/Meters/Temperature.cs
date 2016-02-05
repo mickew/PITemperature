@@ -46,6 +46,21 @@ namespace PiTemperature.Meters
             Clients.All.broadcastTempSensors(TempSensors);
         }
 
+        public void RescanTempSensors()
+        {
+            tempTimer.Dispose();
+            try
+            {
+                GetTempSensors();
+                UpdateNames();
+                CheckAllTemps();
+            }
+            finally
+            {
+                tempTimer = new Timer(TimerCallback, null, 0, 5000);
+            }
+        }
+
         private void UpdateNames()
         {
             foreach (var item in tempsensors)
@@ -60,6 +75,7 @@ namespace PiTemperature.Meters
 
         private void GetTempSensors()
         {
+            tempsensors.Clear();
             if (File.Exists(MASTER_FILE))
             {
                 using (FileStream fs = new FileStream(MASTER_FILE, FileMode.Open, FileAccess.Read))

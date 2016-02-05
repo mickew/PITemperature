@@ -40,6 +40,19 @@ $(function () {
                 }
             });
         };
+        SensorListViewModel.prototype.getRefresh = function () {
+            $.ajax({
+                context: this,
+                type: "get",
+                url: "/api/Sensor/Refresh",
+                success: function (list) {
+                    var mapedSensors = $.map(list, function (item) {
+                        return new SensorViewModel(item.Sensor, item.Name);
+                    });
+                    vm.items(mapedSensors);
+                }
+            });
+        };
         SensorListViewModel.prototype.getItem = function (item) {
             $.ajax({
                 context: this,

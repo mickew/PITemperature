@@ -4,7 +4,7 @@
 <div class="row">
     <div class="col-sm-6 col-sm-offset-3">
         <div class="panel panel-default">
-            <div class="panel-heading"><span class="fa fa-tachometer"></span> <span class="panel-title" data-bind="text: itemCount()"></span></div>
+            <div class="panel-heading"><span class="fa fa-tachometer"></span> <span class="panel-title" data-bind="text: itemCount()"></span><button type="button" class="pull-right" data-bind="click: $root.getRefresh"><span class="fa fa-refresh"></span></button></div>
             <ul class="list-group" data-bind="foreach: items">
                 <li class="list-group-item">
                     <div class="col-sm-3"><span data-bind="text: Sensor"></span></div> <span data-bind="text: Name"></span>

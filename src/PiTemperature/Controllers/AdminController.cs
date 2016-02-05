@@ -28,5 +28,14 @@ namespace PiTemperature.Controllers
             return View();
         }
 
+        [Authorize(Roles = "admins")]
+        [Route("[action]")]
+        public IActionResult Shutdown()
+        {
+            var p = System.Diagnostics.Process.Start("shutdown", "h now");
+            p.WaitForExit(2000);
+            return View("Index");
+        }
+
     }
 }

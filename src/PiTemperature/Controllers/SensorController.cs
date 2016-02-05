@@ -102,5 +102,15 @@ namespace PiTemperature.Controllers
             temperature.RefreshClients();
             return new ObjectResult(sensor);
         }
+
+        // GET: api/sensor
+        [Authorize(Roles = "admins")]
+        [HttpGet("Refresh")]
+        public IEnumerable<TempSensorBase> Refresh()
+        {
+            temperature.RescanTempSensors();
+            return Get();
+        }
+
     }
 }
