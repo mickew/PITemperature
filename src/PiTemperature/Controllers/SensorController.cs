@@ -137,7 +137,7 @@ namespace PiTemperature.Controllers
         [HttpGet("Shutdown")]
         public IActionResult Shutdown()
         {
-            var p = System.Diagnostics.Process.Start("sudo", "reboot");
+            var p = System.Diagnostics.Process.Start("sudo", "shutdown -h now");
             //var p = System.Diagnostics.Process.Start("Notepad");
             p.WaitForExit(1000);
             if (p.HasExited && p.ExitCode != 0)
