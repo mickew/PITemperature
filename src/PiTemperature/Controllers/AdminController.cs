@@ -36,20 +36,5 @@ namespace PiTemperature.Controllers
             return View();
         }
 
-        [Authorize(Roles = "admins")]
-        [Route("[action]")]
-        public IActionResult Shutdown()
-        {
-            var p = System.Diagnostics.Process.Start("sudo", "shutdown -h now");
-            //var p = System.Diagnostics.Process.Start("Notepad");
-            p.WaitForExit(2000);
-            if (p.HasExited && p.ExitCode != 0)
-            {
-                _logger.LogWarning(string.Format("Shutdown not working Exit = {0}",p.ExitCode));
-            }
-            _logger.LogInformation("Shutdown....");
-            return View("Index");
-        }
-
     }
 }

@@ -44,6 +44,10 @@ var sources = {
     ],
     minjs: [
         {
+            name: "site.app.js",
+            path: paths.js + "site.app.js"
+        },
+        {
             name: "sensor.app.js",
             path: paths.js + "sensor.app.js"
         },

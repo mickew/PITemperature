@@ -6,6 +6,7 @@ using Microsoft.AspNet.Mvc;
 using PiTemperature.Meters;
 using PiTemperature.Repositories;
 using Microsoft.AspNet.Authorization;
+using Microsoft.Extensions.Logging;
 
 // For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -15,11 +16,13 @@ namespace PiTemperature.Controllers
     [Route("api/[controller]")]
     public class SensorController : Controller
     {
+        private readonly ILogger<SensorController> _logger;
         private readonly Temperature temperature;
         private ISensorRepository _sensorRepository;
 
-        public SensorController(Temperature temperature, ISensorRepository sensorRepository)
+        public SensorController(Temperature temperature, ISensorRepository sensorRepository, ILogger<SensorController> logger)
         {
+            _logger = logger;
             this.temperature = temperature;
             this._sensorRepository = sensorRepository;
         }
@@ -110,6 +113,40 @@ namespace PiTemperature.Controllers
         {
             temperature.RescanTempSensors();
             return Get();
+        }
+
+        // GET: api/sensor
+        [Authorize(Roles = "admins")]
+        [HttpGet("Reboot")]
+        public IActionResult Reboot()
+        {
+            var p = System.Diagnostics.Process.Start("sudo", "reboot");
+            //var p = System.Diagnostics.Process.Start("Notepad");
+            p.WaitForExit(1000);
+            if (p.HasExited && p.ExitCode != 0)
+            {
+                _logger.LogWarning(string.Format("Reboot not working Exit = {0}", p.ExitCode));
+            }
+            else
+                _logger.LogInformation("Reboot....");
+            return new NoContentResult();
+        }
+
+        // GET: api/sensor
+        [Authorize(Roles = "admins")]
+        [HttpGet("Shutdown")]
+        public IActionResult Shutdown()
+        {
+            var p = System.Diagnostics.Process.Start("sudo", "reboot");
+            //var p = System.Diagnostics.Process.Start("Notepad");
+            p.WaitForExit(1000);
+            if (p.HasExited && p.ExitCode != 0)
+            {
+                _logger.LogWarning(string.Format("Shutdown not working Exit = {0}", p.ExitCode));
+            }
+            else
+                _logger.LogInformation("Shutdown....");
+            return new NoContentResult();
         }
 
     }

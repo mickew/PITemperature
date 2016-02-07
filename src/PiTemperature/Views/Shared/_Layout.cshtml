@@ -44,29 +44,29 @@
     <meta name="theme-color" content="#ffffff"></head>
 <body>
     <!-- topbar starts -->
-@if (!ViewBag.HideNav)
-{
-    <div class="navbar navbar-default navbar-fixed-top" role="navigation">
-        <div class="container-fluid">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" asp-controller="Home" asp-action="Index">
-                    <img alt="Information Display" src="~/images/logo20.png" class="hidden-xs" />
-                    <span>PI Temperature Server</span>
-                </a>
-                <!-- user dropdown -->
-                @await Html.PartialAsync("_UserDropDown")
-                @await Html.PartialAsync("_DropDownMenu")
+    @if (!ViewBag.HideNav)
+    {
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" asp-controller="Home" asp-action="Index">
+                        <img alt="Information Display" src="~/images/logo20.png" class="hidden-xs" />
+                        <span>PI Temperature Server</span>
+                    </a>
+                    <!-- user dropdown -->
+                    @await Html.PartialAsync("_UserDropDown")
+                    @await Html.PartialAsync("_DropDownMenu")
+                </div>
             </div>
         </div>
-    </div>
     <!-- topbar ends -->
-}
+    }
     <div class="container body-content">
         <div class="row">
             <div class="col-lg-12 col-sm-12">
@@ -76,11 +76,29 @@
         <!-- Footer -->
         @await Html.PartialAsync("_Footer")
     </div>
+    <div class="modal fade" id="okCancelModal" role="dialog" aria-labelledby="okCancelModalLabel">
+        <div class="modal-dialog modal-sm" role="dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="okCancelModalLabel">Modal title</h4>
+                </div>
+                <div class="modal-body">
+                    <p>...</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <button id="okCancelModalButton" type="button" class="btn btn-primary" data-dismiss="modal">Ok</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <environment names="Development">
         <script src="~/js/jquery.js"></script>
         <script src="~/js/bootstrap.js"></script>
         <script src="~/js/jquery.signalR.js"></script>
         <script src="~/js/knockout.js"></script>
+        <script src="~/js/site.app.js"></script>
     </environment>
     <environment names="Staging,Production">
         <script src="//ajax.aspnetcdn.com/ajax/jquery/jquery-2.1.4.min.js"
@@ -99,6 +117,7 @@
                 asp-fallback-src="~/js/knockout.js"
                 asp-fallback-test="window.ko">
         </script>
+        <script src="~/js/site.app.min.js"></script>
     </environment>
     @RenderSection("scripts", required: false)
 </body>

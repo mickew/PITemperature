@@ -51,19 +51,19 @@ $(function () {
             });
         }
 
-        getRefresh() {
-            $.ajax({
-                context: this,
-                type: "get",
-                url: "/api/Sensor/Refresh",
-                success: function (list: Array<TempSensorBase>) {
-                    var mapedSensors = $.map(list, function (item) {
-                        return new SensorViewModel(item.Sensor, item.Name)
-                    });
-                    vm.items(mapedSensors);
-                }
-            });
-        }
+        //getRefresh() {
+        //    $.ajax({
+        //        context: this,
+        //        type: "get",
+        //        url: "/api/Sensor/Refresh",
+        //        success: function (list: Array<TempSensorBase>) {
+        //            var mapedSensors = $.map(list, function (item) {
+        //                return new SensorViewModel(item.Sensor, item.Name)
+        //            });
+        //            vm.items(mapedSensors);
+        //        }
+        //    });
+        //}
 
         getItem(item: SensorViewModel) {
             $.ajax({
