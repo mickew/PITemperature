@@ -122,13 +122,7 @@ namespace PiTemperature.Controllers
         {
             var p = System.Diagnostics.Process.Start("sudo", "reboot");
             //var p = System.Diagnostics.Process.Start("Notepad");
-            p.WaitForExit(1000);
-            if (p.HasExited && p.ExitCode != 0)
-            {
-                _logger.LogWarning(string.Format("Reboot not working Exit = {0}", p.ExitCode));
-            }
-            else
-                _logger.LogInformation("Reboot....");
+            _logger.LogInformation("Reboot....");
             return new NoContentResult();
         }
 
@@ -139,13 +133,7 @@ namespace PiTemperature.Controllers
         {
             var p = System.Diagnostics.Process.Start("sudo", "shutdown -h now");
             //var p = System.Diagnostics.Process.Start("Notepad");
-            p.WaitForExit(1000);
-            if (p.HasExited && p.ExitCode != 0)
-            {
-                _logger.LogWarning(string.Format("Shutdown not working Exit = {0}", p.ExitCode));
-            }
-            else
-                _logger.LogInformation("Shutdown....");
+            _logger.LogInformation("Shutdown....");
             return new NoContentResult();
         }
 

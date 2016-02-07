@@ -32,6 +32,9 @@ function reboot() {
         data: null,
         success: function () {
             alert('System is rebooting...');
+        },
+        error: function (error) {
+            alert('Error when system rebooting...');
         }
     });
 }
@@ -43,6 +46,9 @@ function shutdown() {
         data: null,
         success: function () {
             alert('System is shutting down...');
+        },
+        error: function (error) {
+            alert('Error when system shutting down...');
         }
     });
 }
