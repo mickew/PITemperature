@@ -32,14 +32,21 @@ namespace PiTemperature.Controllers
         [HttpGet]
         public IEnumerable<TempSensorBase> Get()
         {
-            return temperature.TempSensors.Select(c => new TempSensorBase(c.Sensor) { Name = c.Name });
+            return temperature.TempSensors.Select(c => new TempSensorBase(c.Sensor) { Name = c.Name, MinValue = c.MinValue, MaxValue = c.MaxValue, TicksInterval = c.TicksInterval, ScaleColor = c.ScaleColor });
         }
 
         [Authorize(Roles = "admins")]
         [HttpGet("{id}", Name = "GetSensor")]
         public IActionResult GetById(string id)
         {
-            var item = temperature.TempSensors.Where(c => c.Sensor == id).Select(c => new TempSensorBase(c.Sensor) { Name = c.Name }).FirstOrDefault();
+            var item = temperature.TempSensors.Where(c => c.Sensor == id).Select(c => new TempSensorBase(c.Sensor)
+            {
+                Name = c.Name,
+                MinValue = c.MinValue,
+                MaxValue = c.MaxValue,
+                TicksInterval = c.TicksInterval,
+                ScaleColor = c.ScaleColor
+            }).FirstOrDefault();
             if (item == null)
             {
                 return HttpNotFound();
@@ -67,13 +74,41 @@ namespace PiTemperature.Controllers
             if (tmpSensor != null)
             {
                 tmpSensor.Name = sensor.Name;
+                tmpSensor.MinValue = sensor.MinValue;
+                tmpSensor.MaxValue = sensor.MaxValue;
+                tmpSensor.TicksInterval = sensor.TicksInterval;
+                tmpSensor.FirstColor = sensor.ScaleColor.FirstColor;
+                tmpSensor.FirstDivider = sensor.ScaleColor.FirstDivider;
+                tmpSensor.SecondColor= sensor.ScaleColor.SecondColor;
+                tmpSensor.SecondDivider = sensor.ScaleColor.SecondDivider;
+                tmpSensor.ThirdColor = sensor.ScaleColor.ThirdColor;
+                tmpSensor.ThirdDivider = sensor.ScaleColor.ThirdDivider;
+                tmpSensor.LastColor = sensor.ScaleColor.LastColor;
                 _sensorRepository.Update(tmpSensor);
             }
             else
             {
-                _sensorRepository.Create(new Models.Sensor() { Id = sensor.Sensor, Name = sensor.Name });
+                _sensorRepository.Create(new Models.Sensor()
+                {
+                    Id = sensor.Sensor,
+                    Name = sensor.Name,
+                    MinValue = sensor.MinValue,
+                    MaxValue = sensor.MaxValue,
+                    TicksInterval = sensor.TicksInterval,
+                    FirstColor = sensor.ScaleColor.FirstColor,
+                    FirstDivider = sensor.ScaleColor.FirstDivider,
+                    SecondColor = sensor.ScaleColor.SecondColor,
+                    SecondDivider = sensor.ScaleColor.SecondDivider,
+                    ThirdColor = sensor.ScaleColor.ThirdColor,
+                    ThirdDivider = sensor.ScaleColor.ThirdDivider,
+                    LastColor = sensor.ScaleColor.LastColor
+                });
             }
             tempSensor.Name = sensor.Name;
+            tempSensor.MinValue = sensor.MinValue;
+            tempSensor.MaxValue = sensor.MaxValue;
+            tempSensor.TicksInterval = sensor.TicksInterval;
+            tempSensor.ScaleColor = sensor.ScaleColor;
             temperature.RefreshClients();
             return new NoContentResult();
         }
@@ -101,7 +136,12 @@ namespace PiTemperature.Controllers
             }
             var i = temperature.TempSensors.IndexOf(tempSensor) + 1;
             sensor.Name = string.Format("TempSensor {0}", i);
-            tempSensor.Name = sensor.Name;
+            TempSensor newTempSensor = new TempSensor(sensor.Name);
+            tempSensor.Name = newTempSensor.Name;
+            tempSensor.MinValue = newTempSensor.MinValue;
+            tempSensor.MaxValue = newTempSensor.MaxValue;
+            tempSensor.TicksInterval = newTempSensor.TicksInterval;
+            tempSensor.ScaleColor= newTempSensor.ScaleColor;
             temperature.RefreshClients();
             return new ObjectResult(sensor);
         }

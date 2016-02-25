@@ -7,10 +7,20 @@ function windowExternal(arg) {
 }
 $(function () {
     var TempSensorViewModel = (function () {
-        function TempSensorViewModel(sensor, name, temp) {
+        function TempSensorViewModel(sensor, name, temp, minValue, maxValue, ticksInterval, scaleColor) {
+            this.MinValue = -30;
+            this.MaxValue = 70;
+            this.TicksInterval = 10;
+            this.HighlightsDiv1 = 20;
+            this.HighlightsDiv2 = 40;
+            this.HighlightsDiv3 = 60;
             this.Sensor = sensor;
             this.Name = name;
             this.Temp = ko.observable(temp);
+            this.MinValue = minValue;
+            this.MaxValue = maxValue;
+            this.TicksInterval = ticksInterval;
+            this.ScaleColor = scaleColor;
         }
         return TempSensorViewModel;
     })();
@@ -30,31 +40,41 @@ $(function () {
         };
         SensorsListViewModel.prototype.drawGauges = function () {
             this.sensors().forEach(function (s) {
+                var h1 = s.ScaleColor.FirstDivider / 100;
+                var h2 = s.ScaleColor.SecondDivider / 100;
+                var h3 = s.ScaleColor.ThirdDivider / 100;
+                var fulScale = Math.abs(s.MinValue) + Math.abs(s.MaxValue);
+                var tick = fulScale / s.TicksInterval;
+                var localmajorTicks = new Array();
+                var i;
+                for (i = 0; i <= s.TicksInterval; i++) {
+                    localmajorTicks.push(Math.round(s.MinValue + i * tick).toString());
+                }
                 s.Gauge = new Gauge({
                     renderTo: s.Sensor,
                     title: s.Name,
-                    minValue: -30,
-                    maxValue: 70,
-                    majorTicks: ['-30', '-20', '-10', '0', '10', '20', '30', '40', '50', '60', '70'],
+                    minValue: s.MinValue,
+                    maxValue: s.MaxValue,
+                    majorTicks: localmajorTicks,
                     units: "°C",
                     valueFormat: { int: 2, dec: 2 },
                     glow: true,
                     highlights: [{
-                            from: -30,
-                            to: -10,
-                            color: 'SkyBlue'
+                            from: s.MinValue,
+                            to: s.MinValue + h1 * fulScale,
+                            color: s.ScaleColor.FirstColor
                         }, {
-                            from: -10,
-                            to: 10,
-                            color: 'Khaki'
+                            from: s.MinValue + h1 * fulScale,
+                            to: s.MinValue + h2 * fulScale,
+                            color: s.ScaleColor.SecondColor
                         }, {
-                            from: 10,
-                            to: 30,
-                            color: 'PaleGreen'
+                            from: s.MinValue + h2 * fulScale,
+                            to: s.MinValue + h3 * fulScale,
+                            color: s.ScaleColor.ThirdColor
                         }, {
-                            from: 30,
-                            to: 70,
-                            color: 'LightSalmon'
+                            from: s.MinValue + h3 * fulScale,
+                            to: s.MinValue + fulScale,
+                            color: s.ScaleColor.LastColor
                         }],
                     animation: {
                         delay: 10,
@@ -70,10 +90,10 @@ $(function () {
             vm.connectionState(state.newState);
             switch (state.newState) {
                 case 0:
-                    vm.sensors().forEach(function (s) { s.Gauge.setValue(-30); });
+                    vm.sensors().forEach(function (s) { s.Gauge.setValue(s.MinValue); });
                     break;
                 case 4:
-                    vm.sensors().forEach(function (s) { s.Gauge.setValue(70); });
+                    vm.sensors().forEach(function (s) { s.Gauge.setValue(s.MaxValue); });
                     break;
                 default:
                     break;
@@ -93,7 +113,7 @@ $(function () {
         };
         SensorsListViewModel.prototype.broadcastTempSensors = function (list) {
             var mapedSensors = $.map(list, function (item) {
-                return new TempSensorViewModel(item.Sensor, item.Name, item.Temp);
+                return new TempSensorViewModel(item.Sensor, item.Name, item.Temp, item.MinValue, item.MaxValue, item.TicksInterval, item.ScaleColor);
             });
             vm.sensors(mapedSensors);
             vm.drawGauges();

@@ -78,6 +78,10 @@ var sources = {
         {
             name: "font-awesome",
             path: paths.bower + "font-awesome/css/**/*.css"
+        },
+        {
+            name: "mjolnic-bootstrap-colorpicker",
+            path: paths.bower + "mjolnic-bootstrap-colorpicker/dist/css/**/*.css"
         }
     ],
     js: [
@@ -108,6 +112,10 @@ var sources = {
         {
             name: "canv-gauge",
             path: paths.scripts + "canv-gauge/**/{gauge.js,gauge.min.js}"
+        },
+        {
+            name: "mjolnic-bootstrap-colorpicker",
+            path: paths.bower + "mjolnic-bootstrap-colorpicker/dist/**/{bootstrap-colorpicker.js,bootstrap-colorpicker.min.js}"
         }
     ]
 };

@@ -62,10 +62,27 @@ interface TempHubClient {
 ////////////////////
 //#region data contracts
 
-interface TempSensor {
+interface ScaleColor {
+    FirstColor: string;
+    FirstDivider: number;
+    SecondColor: string;
+    SecondDivider: number;
+    ThirdColor: string;
+    ThirdDivider: number;
+    LastColor: string;
+}
+
+interface TempAndSensor {
     Sensor: string;
     Name: string;
     Temp: number;
+}
+
+interface TempSensor extends TempAndSensor {
+    MinValue: number;
+    MaxValue: number;
+    TicksInterval: number;
+    ScaleColor: ScaleColor;
 }
 
 //#endregion data contracts

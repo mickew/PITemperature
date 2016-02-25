@@ -5,17 +5,24 @@
     <div class="col-sm-6 col-sm-offset-3">
         <div class="panel panel-default">
             <div class="panel-heading"><span class="fa fa-tachometer"></span> <span class="panel-title" data-bind="text: itemCount()"></span></div>
-            <ul class="list-group" data-bind="foreach: items">
+            <div class="panel-body" data-bind="foreach: items">
+                <div class="row">
+                    <div class="form-group col-sm-4"><span data-bind="text: Sensor"></span></div>
+                    <div class="form-group col-sm-6"><span data-bind="text: Name"></span></div>
+                    <div class="form-group col-sm-2"><button type="button" class="close" aria-hidden="true" data-bind="click: $root.editItem" data-toggle="modal" data-target="#editItem"><span class="fa fa-edit"></span></button></div>
+                </div>
+            </div>
+            @*<ul class="list-group" data-bind="foreach: items">
                 <li class="list-group-item">
                     <div class="col-sm-3"><span data-bind="text: Sensor"></span></div> <span data-bind="text: Name"></span>
                     <button type="button" class="close" aria-hidden="true" data-bind="click: $root.editItem" data-toggle="modal" data-target="#editItem"><span class="fa fa-edit"></span></button>
                 </li>
-            </ul>
+            </ul>*@
         </div>
     </div>
 </div>
 <div id="editItem" class="modal fade" role="dialog">
-    <div class="modal-dialog modal-sm">
+    <div class="modal-dialog">
         <div class="modal-content" data-bind="with: editItem">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true" data-bind="click: function (data) { $root.getItem(data); }"><span class="glyphicon glyphicon-remove"></span></button>
@@ -23,11 +30,77 @@
             </div>
             <div class="modal-body">
                 @*<div class="form-group">
-                    <input type="text" class="form-control" placeholder="Sensor Id" data-bind='value: Sensor, valueUpdate: "afterkeydown"' />
-                </div>*@
-                <div class="form-group">
-                    <label>Name</label>
-                    <input type="text" class="form-control" placeholder="Sensor Name" data-bind='value: Name, valueUpdate: "afterkeydown"' />
+                        <input type="text" class="form-control" placeholder="Sensor Id" data-bind='value: Sensor, valueUpdate: "afterkeydown"' />
+                    </div>*@
+                <div class="row">
+                    <div class="form-group col-sm-6">
+                        <label>Name</label>
+                        <input type="text" class="form-control" placeholder="Sensor Name" data-bind='value: Name, valueUpdate: "afterkeydown"' />
+                    </div>
+                    <div class="form-group col-sm-6">
+                        <label>Tick interval</label>
+                        <input type="text" class="form-control" placeholder="Sensor TicksInterval" data-bind='value: TicksInterval, valueUpdate: "afterkeydown"' />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-sm-6">
+                        <label>Min value</label>
+                        <input type="text" class="form-control" placeholder="Sensor MinValue" data-bind='value: MinValue, valueUpdate: "afterkeydown"' />
+                    </div>
+                    <div class="form-group col-sm-6">
+                        <label>Max value</label>
+                        <input type="text" class="form-control" placeholder="Sensor MaxValue" data-bind='value: MaxValue, valueUpdate: "afterkeydown"' />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-sm-6">
+                        <label>First color</label>
+                        <div id="FirstColorPicker" class="input-group">
+                            <input id="FirstColorId" type="text" class="form-control" placeholder="Sensor FirstColor" data-bind='textInput: FirstColor' />
+                            <span class="input-group-addon"><i></i></span>
+                        </div>
+                    </div>
+                    <div class="form-group col-sm-6">
+                        <label>First divider</label>
+                        <input type="text" class="form-control" placeholder="Sensor FirstDivider" data-bind='value: FirstDivider, valueUpdate: "afterkeydown"' />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-sm-6">
+                        <label>Second color</label>
+                        <div id="SecondColorPicker" class="input-group">
+                            <input id="SecondColorId" type="text" class="form-control" placeholder="Sensor SecondColor" data-bind='textInput: SecondColor' />
+                            <span class="input-group-addon"><i></i></span>
+                        </div>
+                    </div>
+                    <div class="form-group col-sm-6">
+                        <label>Second divider</label>
+                        <input type="text" class="form-control" placeholder="Sensor SecondDivider" data-bind='value: SecondDivider, valueUpdate: "afterkeydown"' />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-sm-6">
+                        <label>Third color</label>
+                        <div id="ThirdColorPicker" class="input-group">
+                            <input id="ThirdColorId" type="text" class="form-control" placeholder="Sensor ThirdColor" data-bind='textInput: ThirdColor' />
+                            <span class="input-group-addon"><i></i></span>
+                        </div>
+                    </div>
+                    <div class="form-group col-sm-6">
+                        <label>Third divider</label>
+                        <input type="text" class="form-control" placeholder="Sensor ThirdDivider" data-bind='value: ThirdDivider, valueUpdate: "afterkeydown"' />
+                    </div>
+                </div>
+                <div class="row">
+                </div>
+                <div class="row">
+                    <div class="form-group col-sm-6">
+                        <label>Last color</label>
+                        <div id="LastColorPicker" class="input-group">
+                            <input id="LastColorId" type="text" class="form-control" placeholder="Sensor LastColor" data-bind='textInput: LastColor' />
+                            <span class="input-group-addon"><i></i></span>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer">
@@ -39,10 +112,12 @@
     </div>
 </div>
 @section Scripts {
-<environment names="Development">
-    <script src="~/js/sensor.app.js"></script>
-</environment>
-<environment names="Staging,Production">
-    <script src="~/js/sensor.app.min.js"></script>
-</environment>
+    <environment names="Development">
+        <script src="~/js/bootstrap-colorpicker.js"></script>
+        <script src="~/js/sensor.app.js"></script>
+    </environment>
+    <environment names="Staging,Production">
+        <script src="~/js/bootstrap-colorpicker.min.js"></script>
+        <script src="~/js/sensor.app.min.js"></script>
+    </environment>
 }

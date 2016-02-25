@@ -103,7 +103,7 @@ namespace PiTemperature.Meters
                 if (Math.Abs(item.Oldtemp - item.Temp) > 0.2)
                 {
                     item.Oldtemp = item.Temp;
-                    Clients.All.broadcastTemperature(item);
+                    Clients.All.broadcastTemperature(new TempSensor(item.Sensor) { Temp = item.Temp, Name = item.Name });
                 }
             }
         }
