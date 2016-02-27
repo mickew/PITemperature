@@ -113,18 +113,25 @@ namespace PiTemperature.Meters
             foreach (var tempSensor in tempsensors)
             {
                 string path = string.Format("{0}{1}/{2}", DEVISE_DIR, tempSensor.Sensor, SLAVE_FILE);
-                using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read))
+                if (File.Exists(path))
                 {
-                    using (var sr = new StreamReader(fs))
+                    using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read))
                     {
-                        var w1slavetext = sr.ReadToEnd();
-                        string temptext = w1slavetext.Split(new string[] { "t=" }, StringSplitOptions.RemoveEmptyEntries)[1];
-                        double temp;
-                        if(double.TryParse(temptext,out temp))
+                        using (var sr = new StreamReader(fs))
                         {
-                            tempSensor.Temp = temp / 1000;
+                            var w1slavetext = sr.ReadToEnd();
+                            string temptext = w1slavetext.Split(new string[] { "t=" }, StringSplitOptions.RemoveEmptyEntries)[1];
+                            double temp;
+                            if (double.TryParse(temptext, out temp))
+                            {
+                                tempSensor.Temp = temp / 1000;
+                            }
                         }
                     }
+                }
+                else
+                {
+                    tempSensor.Temp = (tempSensor.Temp == tempSensor.MaxValue) ? tempSensor.MinValue : tempSensor.MaxValue;
                 }
             }
         }

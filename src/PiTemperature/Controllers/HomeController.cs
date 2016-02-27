@@ -38,6 +38,13 @@ namespace PiTemperature.Controllers
 
         [AllowAnonymous]
         [Route("[action]")]
+        public IActionResult Help()
+        {
+            return View();
+        }
+
+        [AllowAnonymous]
+        [Route("[action]")]
         public IActionResult Error()
         {
             return View("~/Views/Shared/Error.cshtml");

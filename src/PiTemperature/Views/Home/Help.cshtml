@@ -1,0 +1,178 @@
+﻿@{
+    ViewData["Title"] = "Help";
+}
+<style>
+    .kwd {
+        color: #00f;
+    }
+
+    .pln {
+        color: #000;
+    }
+
+    .typ {
+        color: #2b91af;
+    }
+
+    .pun, .opn, .clo {
+        color: #000;
+    }
+
+    .str {
+        color: #a31515;
+    }
+
+    .com {
+        color: green;
+    }
+</style>
+<div class="row section" id="top">
+    <div class="col-sm-3" id="myScrollspy">
+        <ul class="nav nav-tabs nav-stacked" data-offset="0" data-spy="affix">
+            <li class="active"><a href="#top">Back to top</a></li>
+            <li><a href="#section1">Setup sensors</a></li>
+            <li><a href="#section2">Calling API</a></li>
+            <li><a href="#section3">Example app</a></li>
+        </ul>
+    </div>
+    <div class="col-sm-9">
+        <h1>PI Temperature Server</h1>
+        <p class="lead"><i>On this page you can get help on setting up the server and calling the server.</i></p>
+        <div class="section" id="section1">
+            <h2>Setup sensors</h2>
+            <p>Login to the server administration view and navigate to Menu-Sensors.</p>
+            <p><img src="~/images/sensors.png" /></p>
+            <p>The list displays the attached temperature sensors click the <span><i class="fa fa-edit"></i></span> button to edit the settings for the sensor.</p>
+            <p><img src="~/images/settingsensor.png" /></p>
+            <p><b>Name</b><br />The Name of the sensor.</p>
+            <p><b>Tick interval</b><br />The major ticks in the gauge.</p>
+            <p><b>Min value</b><br />The min value for the gauge (<i>-55 to Max value</i>).</p>
+            <p><b>Max value</b><br />The max value for the gauge (<i>Min value to 125</i>).</p>
+            <p><b>First color</b><br />The color of the scale from Min value to First divider.</p>
+            <p><b>Second color</b><br />The color of the scale from First divider to Second divider.</p>
+            <p><b>Third color</b><br />The color of the scale from Second divider to Third divider.</p>
+            <p><b>Last color</b><br />The color of the scale from Third divider to Max value.</p>
+            <p><b>First divider</b><br />The range from Min value in % (<i>0 to Second divider</i>).</p>
+            <p><b>Second divider</b><br />The range from Min value in % (<i>First divider to Third divider</i>).</p>
+            <p><b>Third divider</b><br />The range from Min value in % (<i>Second divider to 100</i>).</p>
+        </div>
+        <hr>
+        <div class="section" id="section2">
+            <h2>Calling API</h2>
+            <p>For calling Web API methodes look at this <a target="_blank" href="http://www.asp.net/web-api/overview/advanced/calling-a-web-api-from-a-net-client">link</a>.</p>
+            <p>The Web API respond to the http get methode.</p>
+            <p>
+                Add the following class to the application:
+                <pre>
+<span class="kwd">public</span><span class="pln"> </span><span class="kwd">class</span><span class="pln"> </span><span class="typ">TempSensor</span>
+<span class="pun">{</span>
+<span class="pln">    </span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">string</span><span class="pln"> Sensor </span><span class="pun">{</span><span class="pln"> </span><span class="kwd">get</span><span class="pln">; </span><span class="kwd">set</span><span class="pln">; </span><span class="pun">}</span>
+<span class="pln">    </span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">string</span><span class="pln"> Name </span><span class="pun">{</span><span class="pln"> </span><span class="kwd">get</span><span class="pln">; </span><span class="kwd">set</span><span class="pln">; </span><span class="pun">}</span>
+<span class="pln">    </span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">double</span><span class="pln"> Temp </span><span class="pun">{</span><span class="pln"> </span><span class="kwd">get</span><span class="pln">; </span><span class="kwd">set</span><span class="pln">; </span><span class="pun">}</span>
+<span class="pun">}</span>
+                </pre>
+            </p>
+            <p>To get list of temperature sensors use http get methode with requstUri of <code>/api/temp</code>.</p>
+            <p>
+                Example:
+                <pre>
+<span class="kwd">static</span><span class="pln"> </span><span class="typ">IEnumerable</span><span class="pun">&lt;</span><span class="typ">TempSensor</span><span class="pun">&gt;</span><span class="pln"> GetSensors()</span>
+<span class="pun">{</span>
+<span class="pln">    </span><span class="kwd">using</span><span class="pln"> (</span><span class="kwd">var</span><span class="pln"> client = </span><span class="kwd">new</span><span class="pln"> </span><span class="typ">HttpClient</span><span class="pln">())</span>
+<span class="pln">    {</span>
+<span class="pln">        client.BaseAddress = uri;</span>
+<span class="pln">        client.DefaultRequestHeaders.Accept.Clear();</span>
+<span class="pln">        client.DefaultRequestHeaders.Accept.Add(</span><span class="kwd">new</span><span class="pln"> </span><span class="typ">MediaTypeWithQualityHeaderValue</span><span class="pln">(</span><span class="str">"application/json"</span><span class="pln">));</span>
+<span class="pln">        </span><span class="typ">HttpResponseMessage</span><span class="pln"> response = client.GetAsync(</span><span class="str">"api/temp"</span><span class="pln">).Result;</span>
+<span class="pln">        response.EnsureSuccessStatusCode();</span>
+<span class="pln">        </span><span class="kwd">return</span><span class="pln"> response.Content.ReadAsAsync&lt;</span><span class="typ">IEnumerable</span><span class="pln">&lt;</span><span class="typ">TempSensor</span><span class="pln">&gt;&gt;().Result.ToList();</span>
+<span class="pln">    }</span>
+<span class="pun">}</span>
+                </pre>
+            </p>
+            <p>To get one of the temperature sensors use http get methode with requstUri of <code>/api/temp/sensor</code>.</p>
+            <p>
+                Example:
+                <pre>
+<span class="kwd">static</span><span class="pln"> </span><span class="typ">TempSensor</span><span class="pln"> GetSensor(</span><span class="kwd">string</span><span class="pln"> sensor)</span>
+<span class="pun">{</span>
+<span class="pln">    </span><span class="kwd">using</span><span class="pln"> (</span><span class="kwd">var</span><span class="pln"> client = </span><span class="kwd">new</span><span class="pln"> </span><span class="typ">HttpClient</span><span class="pln">())</span>
+<span class="pln">    {</span>
+<span class="pln">        client.BaseAddress = uri;</span>
+<span class="pln">        client.DefaultRequestHeaders.Accept.Clear();</span>
+<span class="pln">        client.DefaultRequestHeaders.Accept.Add(</span><span class="kwd">new</span><span class="pln"> </span><span class="typ">MediaTypeWithQualityHeaderValue</span><span class="pln">(</span><span class="str">"application/json"</span><span class="pln">));</span>
+<span class="pln">        </span><span class="typ">HttpResponseMessage</span><span class="pln"> response = client.GetAsync(<span class="kwd">string</span><span class="pln">.Format(</span></span><span class="str">"api/temp/{0}"</span><span class="pln">), sensor)).Result;</span>
+<span class="pln">        response.EnsureSuccessStatusCode();</span>
+<span class="pln">        </span><span class="kwd">return</span><span class="pln"> response.Content.ReadAsAsync&lt;</span><span class="typ">TempSensor</span><span class="pln">&gt;().Result.ToList();</span>
+<span class="pln">    }</span>
+<span class="pun">}</span>
+                </pre>
+            </p>
+        </div>
+        <hr>
+        <div class="section" id="section3">
+            <h2>Example app</h2>
+            <p>
+                <pre>
+<span class="kwd">using</span><span class="pln"> System;</span>
+<span class="kwd">using</span><span class="pln"> System.Collections.Generic;</span>
+<span class="kwd">using</span><span class="pln"> System.Linq;</span>
+<span class="kwd">using</span><span class="pln"> System.Net.Http;</span>
+<span class="kwd">using</span><span class="pln"> System.Net.Http.Headers;</span>
+
+<span class="kwd">namespace</span><span class="pln"> WebAPITest</span>
+<span class="pun">{</span>
+<span class="pln">    </span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">class</span><span class="pln"> </span><span class="typ">TempSensor</span>
+<span class="pun">    {</span>
+<span class="pln">        </span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">string</span><span class="pln"> Sensor </span><span class="pun">{</span><span class="pln"> </span><span class="kwd">get</span><span class="pln">; </span><span class="kwd">set</span><span class="pln">; </span><span class="pun">}</span>
+<span class="pln">        </span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">string</span><span class="pln"> Name </span><span class="pun">{</span><span class="pln"> </span><span class="kwd">get</span><span class="pln">; </span><span class="kwd">set</span><span class="pln">; </span><span class="pun">}</span>
+<span class="pln">        </span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">double</span><span class="pln"> Temp </span><span class="pun">{</span><span class="pln"> </span><span class="kwd">get</span><span class="pln">; </span><span class="kwd">set</span><span class="pln">; </span><span class="pun">}</span>
+<span class="pun">    }</span>
+
+<span class="pln">    </span><span class="kwd">class</span><span class="pln"> </span><span class="typ">Program</span>
+<span class="pun">    {</span>
+<span class="pln">        </span><span class="kwd">static</span><span class="pln"> </span><span class="typ">Uri</span><span class="pln"> uri = </span><span class="kwd">new</span><span class="pln"> </span><span class="typ">Uri</span><span class="pln">(</span><span class="str">"http://localhost:5004/"</span><span class="pln">);</span>
+        
+<span class="pln">        </span><span class="kwd">static</span><span class="pln"> </span><span class="kwd">void</span><span class="pln"> Main(</span><span class="kwd">string</span><span class="pln">[] args)</span>
+<span class="pun">        {</span>  
+<span class="pln">            </span><span class="kwd">var</span><span class="pln"> sensors = GetSensors();</span>
+<span class="pln">            </span><span class="kwd">foreach</span><span class="pln"> (</span><span class="kwd">var</span><span class="pln"> item </span><span class="kwd">in</span><span class="pln"> sensors)</span>
+<span class="pun">            {</span>
+<span class="pun">                </span><span class="kwd">var</span><span class="pln"> sensor = GetSensor(item.Sensor);</span>
+<span class="pun">                </span><span class="typ">Console</span><span class="pln">.WriteLine(</span><span class="str">"{0}\t{1}°C"</span><span class="pln">, sensor.Name, sensor.Temp);</span>
+<span class="pun">            }</span>
+<span class="pun">            </span><span class="typ">Console</span><span class="pln">.ReadKey();</span>
+<span class="pun">        }</span>
+        
+<span class="pun">        </span><span class="kwd">static</span><span class="pln"> </span><span class="typ">IEnumerable</span><span class="pun">&lt;</span><span class="typ">TempSensor</span><span class="pun">&gt;</span><span class="pln"> GetSensors()</span>
+<span class="pun">        {</span>
+<span class="pln">            </span><span class="kwd">using</span><span class="pln"> (</span><span class="kwd">var</span><span class="pln"> client = </span><span class="kwd">new</span><span class="pln"> </span><span class="typ">HttpClient</span><span class="pln">())</span>
+<span class="pln">            {</span>
+<span class="pln">                client.BaseAddress = uri;</span>
+<span class="pln">                client.DefaultRequestHeaders.Accept.Clear();</span>
+<span class="pln">                client.DefaultRequestHeaders.Accept.Add(</span><span class="kwd">new</span><span class="pln"> </span><span class="typ">MediaTypeWithQualityHeaderValue</span><span class="pln">(</span><span class="str">"application/json"</span><span class="pln">));</span>
+<span class="pln">                </span><span class="typ">HttpResponseMessage</span><span class="pln"> response = client.GetAsync(</span><span class="str">"api/temp"</span><span class="pln">).Result;</span>
+<span class="pln">                response.EnsureSuccessStatusCode();</span>
+<span class="pln">                </span><span class="kwd">return</span><span class="pln"> response.Content.ReadAsAsync&lt;</span><span class="typ">IEnumerable</span><span class="pln">&lt;</span><span class="typ">TempSensor</span><span class="pln">&gt;&gt;().Result.ToList();</span>
+<span class="pln">            }</span>
+<span class="pun">        }</span>
+
+<span class="pun">        </span><span class="kwd">static</span><span class="pln"> </span><span class="typ">TempSensor</span><span class="pln"> GetSensor(</span><span class="kwd">string</span><span class="pln"> sensor)</span>
+<span class="pun">        {</span>
+<span class="pln">            </span><span class="kwd">using</span><span class="pln"> (</span><span class="kwd">var</span><span class="pln"> client = </span><span class="kwd">new</span><span class="pln"> </span><span class="typ">HttpClient</span><span class="pln">())</span>
+<span class="pln">            {</span>
+<span class="pln">                client.BaseAddress = uri;</span>
+<span class="pln">                client.DefaultRequestHeaders.Accept.Clear();</span>
+<span class="pln">                client.DefaultRequestHeaders.Accept.Add(</span><span class="kwd">new</span><span class="pln"> </span><span class="typ">MediaTypeWithQualityHeaderValue</span><span class="pln">(</span><span class="str">"application/json"</span><span class="pln">));</span>
+<span class="pln">                </span><span class="typ">HttpResponseMessage</span><span class="pln"> response = client.GetAsync(<span class="kwd">string</span><span class="pln">.Format(</span></span><span class="str">"api/temp/{0}"</span><span class="pln">), sensor)).Result;</span>
+<span class="pln">                response.EnsureSuccessStatusCode();</span>
+<span class="pln">                </span><span class="kwd">return</span><span class="pln"> response.Content.ReadAsAsync&lt;</span><span class="typ">TempSensor</span><span class="pln">&gt;().Result.ToList();</span>
+<span class="pln">            }</span>
+<span class="pun">        }</span>
+<span class="pun">    }</span>
+<span class="pun">}</span>
+                </pre>
+            </p>
+        </div>
+    </div>
+</div>
