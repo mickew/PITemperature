@@ -73,6 +73,38 @@ div.center, p.center, img.center {
     text-align: center;
 }
 
+//about page
+.about {
+    h1 {
+        color: #000000;
+        small {
+            color: #777;
+        }
+    }
+    p {
+        color: #000000;
+        a {
+            position: relative;
+            z-index: 3;
+        }
+    }
+}
+.about::before {
+    content: ' ';
+    display: block;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 93%;
+    z-index: 1;
+    opacity: 0.2;
+    background-image: url('../images/gauges.png');
+    background-repeat: no-repeat;
+    background-position: 50% 0;
+    background-size: cover;
+}
+
 //help page
 ul.nav-tabs {
 	width: 140px;
