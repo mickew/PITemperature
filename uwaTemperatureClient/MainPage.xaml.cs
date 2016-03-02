@@ -119,6 +119,7 @@ namespace uwaTemperatureClient
         {
             try
             {
+                await WebView.ClearTemporaryWebDataAsync();
                 //string s = await MakeWebRequest(uri);
                 await _dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => browser.Navigate(uri));
             }

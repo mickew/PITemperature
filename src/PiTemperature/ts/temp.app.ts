@@ -7,7 +7,7 @@ interface External {
 }
 
 function windowExternal(arg: string) {
-    if (window.external.notify != undefined)
+    //if (window.external.notify != undefined)
         window.external.notify(arg);
 }
 

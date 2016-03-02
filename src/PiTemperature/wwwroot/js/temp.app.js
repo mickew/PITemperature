@@ -2,8 +2,8 @@
 /// <reference path="typings/knockout.d.ts" />
 /// <reference path="typings/gauge.d.ts" />
 function windowExternal(arg) {
-    if (window.external.notify != undefined)
-        window.external.notify(arg);
+    //if (window.external.notify != undefined)
+    window.external.notify(arg);
 }
 $(function () {
     var TempSensorViewModel = (function () {
