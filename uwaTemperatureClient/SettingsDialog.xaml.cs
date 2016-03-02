@@ -33,11 +33,14 @@ namespace uwaTemperatureClient
         public SettingsDialog()
         {
             this.InitializeComponent();
+
+            OSK_TextBox.RegisterEditControl(serverTextBox);
         }
 
         private void SetGui(PITSettings settings)
         {
-            serverTextBox.Text = settings.Server;
+            //serverTextBox.Text = settings.Server;
+            OSK_TextBox.OutputString = settings.Server;
         }
 
         private void ContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
@@ -54,6 +57,21 @@ namespace uwaTemperatureClient
         private void SetSettings()
         {
             _settings.Server = serverTextBox.Text;
+        }
+
+        private void OSK_Button_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            if (OSK_TextBox.Visibility == Visibility.Collapsed)
+            {
+                OSK_TextBox.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                OSK_TextBox.Visibility = Visibility.Collapsed;
+            }
+
+            /* Need to set focus so the on screen keyboard's content buffer gets updated */
+            serverTextBox.Focus(FocusState.Programmatic);
         }
     }
 }
