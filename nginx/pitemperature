@@ -23,12 +23,12 @@ DNXFRAMEWORK=mono
 DNXVERSION=1.0.0-rc1-update1
 DNXCOMMAND=web
 
-APPROOT=/home/$WWW_USER/PiTemperature/src/PiTemperature
+APPROOT=/home/$WWW_USER/PITemperature/src/PiTemperature
 
 DNXPATHS=/home/$WWW_USER/.dnx/runtimes/dnx-$DNXFRAMEWORK.$DNXVERSION/bin:/home/$WWW_USER/.dnx/bin
 
 PIDFILE=$APPROOT/pitemperature.pid
-LOGFILE=$APPROOT/pitemperature.log
+LOGFILE=/var/log/pitemp/pitemperature.log
 
 # fix issue with DNX exception in case of two env vars with the same name but different case
 TMP_SAVE_runlevel_VAR=$runlevel
@@ -39,8 +39,8 @@ start() {
     echo 'Service already running' >&2
     return 1
   fi
-  echo 'Starting service...' >&2
-  su -c "export PATH=$DNXPATHS:\${PATH} && start-stop-daemon -SbmCv -x /usr/bin/nohup -p \"$PIDFILE\" -d \"$APPROOT\" -- \"$DNXRUNTIME\" $DNXCOMMAND > \"$LOGFILE\" 2>&1" $WWW_USER
+  echo 'Starting PI Temperature Server service...' >&2
+  su -c "export PATH=$DNXPATHS:\${PATH} && start-stop-daemon -SbmCv -x /usr/bin/nohup -p \"$PIDFILE\" -d \"$APPROOT\" -- \"$DNXRUNTIME\" $DNXCOMMAND >> \"$LOGFILE\" 2>&1" $WWW_USER
   echo 'Service started' >&2
 }
 
@@ -49,7 +49,7 @@ stop() {
     echo 'Service not running' >&2
     return 1
   fi
-  echo 'Stopping service...' >&2
+  echo 'Stopping PI Temperature Server service...' >&2
   start-stop-daemon -K -p "$PIDFILE"
   rm -f "$PIDFILE"
   echo 'Service stopped' >&2
