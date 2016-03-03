@@ -88,7 +88,8 @@ namespace PiTemperature.Meters
                             i++;
                             string str;
                             str = sr.ReadLine();
-                            tempsensors.Add(new TempsensorOldTemp(str) { Name = string.Format("TempSensor {0}", i) });
+                            if (string.Compare(str, "not found.") != 0)
+                                tempsensors.Add(new TempsensorOldTemp(str) { Name = string.Format("TempSensor {0}", i) });
                         }
                     }
                 }
