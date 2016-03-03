@@ -126,6 +126,10 @@
     <None Include="uwaTemperatureClient_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\bootstrap.min.css" />
+    <Content Include="Assets\default.css" />
+    <Content Include="Assets\default.html" />
+    <Content Include="Assets\gauges.png" />
     <Content Include="Properties\Default.rd.xml" />
     <Content Include="Assets\LockScreenLogo.scale-200.png" />
     <Content Include="Assets\SplashScreen.scale-200.png" />

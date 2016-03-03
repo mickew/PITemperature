@@ -30,6 +30,7 @@ namespace uwaTemperatureClient
     /// </summary>
     public sealed partial class MainPage : Page
     {
+        private const string defaltUrl = "ms-appx-web:///assets/default.html"; 
         private readonly CoreDispatcher _dispatcher;
         private PITSettings settings;
         private bool statusBarIsShownByScriptNotify = false;
@@ -38,12 +39,13 @@ namespace uwaTemperatureClient
         private GpioPin buttonPin;
         private ThreadPoolTimer buttonShutDownTimer;
 
-
-
         public MainPage()
         {
             this.InitializeComponent();
             _dispatcher = CoreWindow.GetForCurrentThread().Dispatcher;
+#pragma warning disable 4014
+            Navigate(new Uri(defaltUrl));
+#pragma warning restore 4014
             settings = new PITSettings();
             settings.Load();
             if (settings.CheckOk())
@@ -119,7 +121,7 @@ namespace uwaTemperatureClient
         {
             try
             {
-                await WebView.ClearTemporaryWebDataAsync();
+                //await WebView.ClearTemporaryWebDataAsync();
                 //string s = await MakeWebRequest(uri);
                 await _dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => browser.Navigate(uri));
             }
@@ -198,7 +200,8 @@ namespace uwaTemperatureClient
 
         private void browser_NavigationStarting(WebView sender, WebViewNavigationStartingEventArgs args)
         {
-            ShowStatusBar(false);
+            if (!args.Uri.AbsoluteUri.Equals(defaltUrl))
+                ShowStatusBar(false);
         }
 
         private void browser_NavigationFailed(object sender, WebViewNavigationFailedEventArgs e)
